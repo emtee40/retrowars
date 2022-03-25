@@ -157,6 +157,7 @@ class SpaceInvadersGameState(
     var enemyDirection = Direction.Right
 
     var enemies: List<EnemyRow> = spawnEnemies()
+    val networkEnemyCells: MutableSet<EnemyCell> = mutableSetOf()
 
     var movingRow = enemies.size - 1
 
@@ -198,7 +199,7 @@ data class EnemyRow(
     fun isNotEmpty() = cells.any { it.hasEnemy }
 }
 
-data class EnemyCell(
+class EnemyCell(
     var x: Float,
     val width: Float,
     var hasEnemy: Boolean,

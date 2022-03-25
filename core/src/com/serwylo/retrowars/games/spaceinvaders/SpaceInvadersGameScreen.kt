@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.serwylo.beatgame.ui.UI_SPACE
@@ -46,6 +45,10 @@ class SpaceInvadersGameScreen(game: RetrowarsGame) : GameScreen(
             state.isMovingLeft = controller.trigger(SpaceInvadersSoftController.Buttons.LEFT)
             state.isMovingRight = controller.trigger(SpaceInvadersSoftController.Buttons.RIGHT)
             state.isFiring = controller.trigger(SpaceInvadersSoftController.Buttons.FIRE)
+
+            if (controller.trigger(SpaceInvadersSoftController.Buttons.TEST)) {
+                onReceiveDamage(1)
+            }
 
             if (state.nextPlayerRespawnTime <= 0) {
                 updatePlayer(delta)
@@ -123,10 +126,10 @@ class SpaceInvadersGameScreen(game: RetrowarsGame) : GameScreen(
         }
 
         r.begin(ShapeRenderer.ShapeType.Filled)
-        r.color = Color.WHITE
         state.enemies.forEach { row ->
             row.cells.forEach { cell ->
                 if (cell.hasEnemy) {
+                    r.color = if (state.networkEnemyCells.contains(cell)) Color.RED else Color.WHITE
                     r.rect(
                      cell.x + (state.cellWidth - row.enemyWidth) / 2,
                         row.y,
@@ -137,6 +140,7 @@ class SpaceInvadersGameScreen(game: RetrowarsGame) : GameScreen(
             }
         }
 
+        r.color = Color.WHITE
         state.playerBullet?.also { renderBullet(r, it) }
         state.enemyBullets.forEach { renderBullet(r, it) }
         r.end()
@@ -167,7 +171,22 @@ class SpaceInvadersGameScreen(game: RetrowarsGame) : GameScreen(
     }
 
     override fun onReceiveDamage(strength: Int) {
+        for (i in 0 until strength) {
+            spawnNetworkEnemy()
+            spawnNetworkEnemy()
+        }
+    }
 
+    private fun spawnNetworkEnemy() {
+        val lastRow = state.enemies.last { it.cells.any { !it.hasEnemy } }
+        val emptySpaces = lastRow.cells.filter { !it.hasEnemy }
+
+        if (emptySpaces.isNotEmpty()) {
+            emptySpaces.random().also { cell ->
+                cell.hasEnemy = true
+                state.networkEnemyCells.add(cell)
+            }
+        }
     }
 
     private fun countEnemies() = state.enemies.fold(0) { acc, row -> acc + row.cells.count { it.hasEnemy } }
@@ -287,6 +306,7 @@ class SpaceInvadersGameScreen(game: RetrowarsGame) : GameScreen(
                 // have it travel in between columns of enemies as is often the case in the original.
                 if (bullet.x > cell.x + (state.cellWidth - row.enemyWidth) / 2 && bullet.x < cell.x + (state.cellWidth - row.enemyWidth) / 2 + row.enemyWidth) {
                     cell.hasEnemy = false
+                    // state.networkEnemyCells.remove(cell)
 
                     onEnemyHit()
 
