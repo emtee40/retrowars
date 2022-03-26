@@ -456,22 +456,14 @@ class SpaceInvadersSoftController: SoftControllerLayout() {
             Input.Keys.SPACE,
             { SingleShotButton() },
         ),
-        ButtonDefinition(
-            Buttons.TEST,
-            { sprites -> sprites.buttonIcons.thrust },
-            Input.Keys.D,
-            { SingleShotButton() },
-        ),
     )
 
     override fun getLayouts() = listOf(
         """
-        [ test ][<----->][<-->][<---->]
         [ left ][ right ][<-->][ fire ]
         """,
 
         """
-        [<---->][<-->][<---->][ test  ]
         [ fire ][<-->][ left ][ right ]
         """,
     )
@@ -480,7 +472,6 @@ class SpaceInvadersSoftController: SoftControllerLayout() {
         const val LEFT = "left"
         const val RIGHT = "right"
         const val FIRE = "fire"
-        const val TEST = "test"
     }
 
 }
