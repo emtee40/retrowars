@@ -1,6 +1,7 @@
 package com.serwylo.retrowars.net
 
 import com.badlogic.gdx.Gdx
+import com.serwylo.retrowars.games.Games
 import com.serwylo.retrowars.ui.filterAlivePlayers
 import com.serwylo.retrowars.utils.AppProperties
 import com.serwylo.retrowars.utils.Options
@@ -166,7 +167,7 @@ class RetrowarsClient(host: String, port: Int) {
                 // measured.
                 Gdx.app.postRunnable {
                     when(obj) {
-                        is Network.Client.OnPlayerAdded -> onPlayerAdded(obj.id, obj.game, obj.status)
+                        is Network.Client.OnPlayerAdded -> onPlayerAdded(obj.id, Games.spaceInvaders.id, obj.status)
                         is Network.Client.OnPlayerRemoved -> onPlayerRemoved(obj.id)
                         is Network.Client.OnPlayerScored -> onScoreChanged(obj.id, obj.score)
                         is Network.Client.OnPlayerStatusChange -> onStatusChanged(obj.id, obj.status)
@@ -280,7 +281,7 @@ class RetrowarsClient(host: String, port: Int) {
             // just keep the game they already have.
             val newGame = playerIdToNewGame[it.id]
             if (newGame != null) {
-                it.game = newGame
+                it.game = Games.spaceInvaders.id
             }
         }
 

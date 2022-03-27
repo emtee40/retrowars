@@ -17,7 +17,7 @@ class SpaceInvadersGameState(
 
         const val PLAYER_SPEED = 100f
 
-        const val SCORE_PER_ENEMY = 2000
+        const val SCORE_PER_ENEMY = 3000
 
         const val MAX_ENEMY_BULLETS_ON_SCREEN = 3
 
@@ -107,7 +107,15 @@ class SpaceInvadersGameState(
         }
 
         val pixmap = Pixmap(barrierTexture.regionWidth, barrierTexture.regionHeight, data.format).also { pixmap ->
-            pixmap.drawPixmap(data.consumePixmap(), 0, 0, barrierTexture.regionX, barrierTexture.regionY, barrierTexture.regionWidth, barrierTexture.regionHeight)
+            pixmap.drawPixmap(
+                data.consumePixmap(),
+                0,
+                0,
+                barrierTexture.regionX,
+                barrierTexture.regionY,
+                barrierTexture.regionWidth,
+                barrierTexture.regionHeight
+            )
         }
 
         val barrierX = worldWidth / 5 * x
