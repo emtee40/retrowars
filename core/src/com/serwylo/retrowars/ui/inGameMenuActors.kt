@@ -9,7 +9,7 @@ import com.serwylo.beatgame.ui.makeButton
 import com.serwylo.beatgame.ui.makeLargeButton
 import com.serwylo.retrowars.UiAssets
 
-class PauseGameActor(
+class SingleplayerInGameMenuActor(
     assets: UiAssets,
     onResume: () -> Unit,
     onRestart: () -> Unit,
@@ -37,6 +37,34 @@ class PauseGameActor(
             addActor(restartButton)
             addActor(changeGameButton)
             addActor(mainMenuButton)
+        })
+    }
+
+}
+
+class MultiplayerInGameMenuActor(
+    assets: UiAssets,
+    onCloseMenu: () -> Unit,
+    onLeaveGame: () -> Unit,
+) : VerticalGroup() {
+
+    private val styles = assets.getStyles()
+    private val strings = assets.getStrings()
+
+    init {
+
+        align(Align.center)
+        columnAlign(Align.center)
+        space(UI_SPACE)
+
+        val resumeButton = makeLargeButton("Close Menu", styles) { onCloseMenu() }
+        val leaveGameButton = makeButton("Leave Game", styles) { onLeaveGame() }
+
+        addActor(Label("Menu", styles.label.huge))
+        addActor(Label("(Multiplayer games cannot be paused)", styles.label.small))
+        addActor(resumeButton)
+        addActor(HorizontalGroup().apply {
+            addActor(leaveGameButton)
         })
     }
 
